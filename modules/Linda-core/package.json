@@ -1,7 +1,23 @@
 {
-  "name": "Linda-core",
+  "name": "linda-core",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "npm run build && npm run server",
+    "start:dev": "tsc -w & npm run server:dev",
+    "server": "node dist/server/app.js",
+    "server:dev": "nodemon dist/server/app.js",
+    "build": "tsc"
+  },
   "author": "Ryusei Sajiki",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/node": "^10.3.2"
+  },
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "typescript": "^2.9.1"
+  }
 }
