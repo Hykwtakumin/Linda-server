@@ -1,0 +1,9 @@
+{
+  "name": "Linda",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/saji-ryu/Linda",
+  "author": "saji-ryu <rsajiki@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
