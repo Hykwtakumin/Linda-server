@@ -5,18 +5,19 @@ import {
   _ResponseTuple
 } from "./interfaces/tuple-type";
 import { Emitter } from "./eventEmitter";
-const emitter = new Emitter();
 
-export class tupleSpace {
+export default class tupleSpace {
+  emitter: any;
   tuples: _Tuples;
   name: string;
   constructor(tupleSpaceName: string) {
-    this.tuples = [{ id: "init", time: Number(Date.now), type: "init" }];
+    this.tuples = [{ id: "init", time: Date.now(), type: "init" }];
     this.name = tupleSpaceName;
+    this.emitter = new Emitter();
   }
   //TODO:numberで返していいものか検討
   write(writeTuple: _Tuple): number {
-    emitter.emit("newTuple", writeTuple);
+    this.emitter.emit("newTuple", writeTuple);
     this.tuples.push(writeTuple);
     return this.tuples.length;
   }
@@ -32,7 +33,7 @@ export class tupleSpace {
   }
   //FIXME:any型にしないで関数の型をあとでちゃんと書く
   watch(watchTuple: _SearchTuple, callback: any): void {
-    emitter.on("newTuple", (resTuple: _Tuple) => {
+    this.emitter.on("newTuple", (resTuple: _Tuple) => {
       let result = this.isMuch(resTuple, watchTuple);
       if (result.isMuched) {
         callback(result.res);
@@ -63,5 +64,3 @@ export class tupleSpace {
     return { isMuched: true, res: targetTuple };
   }
 }
-
-export { emitter };

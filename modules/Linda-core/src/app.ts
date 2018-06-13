@@ -4,6 +4,8 @@ import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 dotenv.load();
 
+import routeIndex from "./routes/index";
+
 const PORT: number = Number(process.env.PORT) || 3000;
 
 const app: express.Express = express();
@@ -15,6 +17,8 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+app.use("/", routeIndex);
 
 app.listen(PORT, () => {
   console.log("server listeninig at port:" + PORT);

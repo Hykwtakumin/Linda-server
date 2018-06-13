@@ -5,8 +5,8 @@
   "scripts": {
     "start": "npm run build && npm run server",
     "start:dev": "tsc -w & npm run server:dev",
-    "server": "node dist/index.js",
-    "server:dev": "nodemon dist/index.js -watch dist",
+    "server": "node dist/app.js",
+    "server:dev": "nodemon dist/app.js -watch dist",
     "build": "tsc"
   },
   "author": "Ryusei Sajiki",
