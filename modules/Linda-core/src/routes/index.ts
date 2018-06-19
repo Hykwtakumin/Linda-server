@@ -1,5 +1,5 @@
 import * as express from "express";
-import tupleSpaces from "../tupleSpaces";
+import tupleSpaces from "../memoryDB";
 import tupleSpace from "../tupleSpace";
 //import { _TupleSpace } from "../interfaces/tuple-type";
 const router: express.Router = express.Router();

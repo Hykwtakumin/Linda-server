@@ -2,24 +2,29 @@ import {
   _Tuples,
   _Tuple,
   _SearchTuple,
-  _ResponseTuple
+  _ResponseTuple,
 } from "./interfaces/tuple-type";
 import { Emitter } from "./eventEmitter";
+//import storageClient from "./storageClient";
 
 export default class tupleSpace {
+  //FIXME:any型にしないで関数の型をあとでちゃんと書く
+  storage: any;
   emitter: any;
-  tuples: _Tuples;
+  //tuples: _Tuples;
   name: string;
-  constructor(tupleSpaceName: string) {
-    this.tuples = [{ id: "init", time: Date.now(), type: "init" }];
+  constructor(tupleSpaceName: string, storageClient: any) {
+    //this.tuples = [{ id: "init", time: Date.now(), type: "init" }];
     this.name = tupleSpaceName;
     this.emitter = new Emitter();
+    this.storage = storageClient;
   }
   //TODO:numberで返していいものか検討
-  write(writeTuple: _Tuple): number {
+  write(writeTuple: _Tuple): string {
     this.emitter.emit("newTuple", writeTuple);
-    this.tuples.push(writeTuple);
-    return this.tuples.length;
+    return this.storage.insert(writeTuple);
+    //this.tuples.push(writeTuple);
+    //return this.tuples.length;
   }
   read(searchTuple: _SearchTuple): _ResponseTuple {
     let i: number = 0;
@@ -48,19 +53,5 @@ export default class tupleSpace {
     } else {
       return { isMuched: false, res: null };
     }
-  }
-
-  private isMuch(
-    targetTuple: _Tuple,
-    searchTuple: _SearchTuple
-  ): _ResponseTuple {
-    for (let operationKey in searchTuple) {
-      if (!targetTuple[operationKey]) {
-        return { isMuched: false, res: null };
-      } else if (targetTuple[operationKey] != searchTuple[operationKey]) {
-        return { isMuched: false, res: null };
-      }
-    }
-    return { isMuched: true, res: targetTuple };
   }
 }
