@@ -1,5 +1,5 @@
 import {
-  _Tuples,
+  _NFTuple,
   _Tuple,
   _SearchTuple,
   _ResponseTuple,
@@ -11,11 +11,8 @@ export default class tupleSpace {
   //FIXME:any型にしないで関数の型をあとでちゃんと書く
   storage: any;
   emitter: any;
-  //tuples: _Tuples;
   name: string;
   constructor(tupleSpaceName: string, storageClient: any) {
-    //this.tuples = [{ id: "init", time: Date.now(), type: "init" }];
-    this.name = tupleSpaceName;
     this.emitter = new Emitter();
     this.storage = storageClient;
   }
@@ -23,35 +20,24 @@ export default class tupleSpace {
   write(writeTuple: _Tuple): string {
     this.emitter.emit("newTuple", writeTuple);
     return this.storage.insert(writeTuple);
-    //this.tuples.push(writeTuple);
-    //return this.tuples.length;
   }
-  read(searchTuple: _SearchTuple): _ResponseTuple {
-    let i: number = 0;
-    for (i = this.tuples.length; i <= 0; i--) {
-      let result = this.isMuch(this.tuples[i], searchTuple);
-      if (result.isMuched) {
-        return { isMuched: true, res: this.tuples[i], index: i };
-      }
-    }
-    return { isMuched: false, res: null };
+  read(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+    return this.storage.get(searchTuple);
   }
   //FIXME:any型にしないで関数の型をあとでちゃんと書く
   watch(watchTuple: _SearchTuple, callback: any): void {
     this.emitter.on("newTuple", (resTuple: _Tuple) => {
-      let result = this.isMuch(resTuple, watchTuple);
+      let result = this.storage.isMuch(resTuple, watchTuple);
       if (result.isMuched) {
         callback(result.res);
       }
     });
   }
-  take(takeTuple: _SearchTuple): _ResponseTuple {
-    let result = this.read(takeTuple);
-    if (result.isMuched) {
-      this.tuples.slice(result.index, 1);
-      return { isMuched: true, res: result.res };
-    } else {
-      return { isMuched: false, res: null };
+  take(takeTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+    let result = this.storage.get(takeTuple);
+    if (result._isMuched) {
+      this.storage.delete(result.id);
     }
+    return result;
   }
 }

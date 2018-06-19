@@ -4,7 +4,7 @@ export type _TupleSpace = {
   tuples: _Tuples;
 };
 
-export type _TupleSpaces = {
+export type _Memory = {
   [key: string]: _Tuples;
 };
 
@@ -20,7 +20,19 @@ export type _Tuple = {
 };
 
 export type _ResponseTuple = {
+  _isMuched: boolean;
+  id: string;
+  time: number;
+  from?: string;
+  [key: string]: number | string | boolean;
+};
+
+export type _NFTuple = {
+  _isMuched: false;
+  mes: string;
+};
+
+export type _IsMuchResponse = {
   isMuched: boolean;
   res: _Tuple | null;
-  index?: number;
 };

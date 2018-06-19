@@ -1,5 +1,5 @@
-import { _TupleSpaces } from "./interfaces/tuple-type";
+import { _Memory } from "./interfaces/tuple-type";
 
-const memoryDB: _TupleSpaces = {};
+const memoryDB: _Memory = {};
 
 export default memoryDB;

@@ -1,6 +1,7 @@
 import {
-  _Tuples,
+  _IsMuchResponse,
   _Tuple,
+  _NFTuple,
   _SearchTuple,
   _ResponseTuple,
 } from "./interfaces/tuple-type";
@@ -8,21 +9,38 @@ import {
 import memoryDB from "./memoryDB";
 
 export default class storageClient {
-  constructor(tupleSpaceName: string) {}
-  get(searchTuple: _SearchTuple): _Tuple {
-    return;
+  tupleSpace: any;
+  constructor(tupleSpaceName: string) {
+    if (memoryDB[tupleSpaceName]) {
+      this.tupleSpace = memoryDB[tupleSpaceName];
+    } else {
+      this.tupleSpace = memoryDB[tupleSpaceName] = [
+        { id: "init", time: Date.now(), type: "init" },
+      ];
+    }
+  }
+  get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+    let i: number = 0;
+    for (i = this.tupleSpace.length; i <= 0; i--) {
+      let result = this.isMuch(this.tupleSpace[i], searchTuple);
+      if (result.isMuched) {
+        let resData: _ResponseTuple = this.tupleSpace[i];
+        resData._isMuched = true;
+        return resData;
+      }
+    }
+    return { _isMuched: false, mes: "no match data" };
   }
   insert(writeTuple: _Tuple): string {
-    memoryDB.push;
-    return "id";
+    this.tupleSpace.push(writeTuple);
+    return this.tupleSpace.length.toString();
   }
   update() {}
-  delete() {}
+  delete(id: number) {
+    this.tupleSpace.slice(id, 1);
+  }
 
-  private isMuch(
-    targetTuple: _Tuple,
-    searchTuple: _SearchTuple
-  ): _ResponseTuple {
+  isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {
     for (let operationKey in searchTuple) {
       if (!targetTuple[operationKey]) {
         return { isMuched: false, res: null };
