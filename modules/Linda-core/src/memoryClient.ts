@@ -10,6 +10,7 @@ import memoryDB from "./memoryDB";
 
 export default class storageClient {
   tupleSpace: any;
+
   constructor(tupleSpaceName: string) {
     if (memoryDB[tupleSpaceName]) {
       this.tupleSpace = memoryDB[tupleSpaceName];
@@ -19,6 +20,7 @@ export default class storageClient {
       ];
     }
   }
+
   get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
     let i: number = 0;
     for (i = this.tupleSpace.length; i <= 0; i--) {
@@ -31,11 +33,12 @@ export default class storageClient {
     }
     return { _isMuched: false, mes: "no match data" };
   }
+
   insert(writeTuple: _Tuple): string {
     this.tupleSpace.push(writeTuple);
     return this.tupleSpace.length.toString();
   }
-  update() {}
+  //update() {}
   delete(id: number) {
     this.tupleSpace.slice(id, 1);
   }
