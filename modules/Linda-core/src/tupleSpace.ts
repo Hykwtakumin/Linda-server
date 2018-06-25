@@ -5,24 +5,25 @@ import {
   _ResponseTuple,
 } from "./interfaces/tuple-type";
 import Emitter from "./eventEmitter";
+import { ObjectID } from "bson";
 //import storageClient from "./storageClient";
 
 export default class tupleSpace {
   //FIXME:any型にしないで関数/クラスインスタンスの型をあとでちゃんと書く
   storage: any;
-  emitter: any;
-  name: string;
-  constructor(tupleSpaceName: string, storageClient: any) {
+  constructor(storageClient: any) {
     this.storage = storageClient;
   }
   //TODO:numberで返していいものか検討
-  write(writeTuple: _Tuple): string {
+  async write(writeTuple: _Tuple): Promise<string | ObjectID> {
     Emitter.emit("newTuple", writeTuple);
     return this.storage.insert(writeTuple);
   }
-  read(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
-    return this.storage.get(searchTuple);
+  async read(searchTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
+    let resData: _ResponseTuple | _NFTuple = this.storage.get(searchTuple);
+    return resData;
   }
+
   //FIXME:any型にしないで関数の型をあとでちゃんと書く
   watch(watchTuple: _SearchTuple, callback: any): void {
     Emitter.on("newTuple", (resTuple: _Tuple) => {
@@ -32,12 +33,21 @@ export default class tupleSpace {
       }
     });
   }
-  take(takeTuple: _SearchTuple): _ResponseTuple | _NFTuple {
-    let result = this.storage.get(takeTuple);
-    if (result._isMuched) {
-      this.storage.delete(result.id);
+  // take(takeTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+  //   let result = this.storage.get(takeTuple);
+  //   if (result._isMuched) {
+  //     this.storage.delete(result.id);
+  //   }
+  //   return result;
+  // }
+  async take(takeTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
+    let resData: _ResponseTuple | _NFTuple = await this.storage.get(takeTuple);
+    if (resData._isMuched) {
+      //console.log(resData._id);
+      await this.storage.delete(resData._id);
+      //this.storage.delete(0);
     }
-    return result;
+    return resData;
   }
 }
 

@@ -7,40 +7,48 @@ import {
 } from "./interfaces/tuple-type";
 
 import memoryDB from "./memoryDB";
+import Emitter from "./eventEmitter";
 
 export default class storageClient {
   tupleSpace: any;
-
   constructor(tupleSpaceName: string) {
     if (memoryDB[tupleSpaceName]) {
       this.tupleSpace = memoryDB[tupleSpaceName];
+      console.log(tupleSpaceName + " is already exist");
     } else {
       this.tupleSpace = memoryDB[tupleSpaceName] = [
-        { id: "init", time: Date.now(), type: "init" },
+        { _id: 0, time: Date.now(), type: "init" },
       ];
+      console.log(tupleSpaceName + " is created");
     }
   }
-
+  // .map使って書き直せる説
   get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
-    let i: number = 0;
-    for (i = this.tupleSpace.length; i <= 0; i--) {
-      let result = this.isMuch(this.tupleSpace[i], searchTuple);
+    let i: number;
+    for (i = this.tupleSpace.length; i > 0; i--) {
+      let result = this.isMuch(this.tupleSpace[i - 1], searchTuple);
       if (result.isMuched) {
-        let resData: _ResponseTuple = this.tupleSpace[i];
+        let resData: _ResponseTuple = this.tupleSpace[i - 1];
         resData._isMuched = true;
         return resData;
       }
     }
-    return { _isMuched: false, mes: "no match data" };
+    if (i == 0) {
+      return { _isMuched: false, mes: "no match data" };
+    }
   }
 
-  insert(writeTuple: _Tuple): string {
+  insert(writeTuple: _Tuple): _Tuple {
+    writeTuple._id = this.tupleSpace.length;
+    writeTuple.time = Date.now();
     this.tupleSpace.push(writeTuple);
-    return this.tupleSpace.length.toString();
+    return writeTuple;
   }
   //update() {}
-  delete(id: number) {
-    this.tupleSpace.slice(id, 1);
+  delete(id: number): void {
+    console.log(id);
+    //console.log("this tupleSpace:" + JSON.stringify(this.tupleSpace));
+    this.tupleSpace.splice(id, 1);
   }
 
   isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {

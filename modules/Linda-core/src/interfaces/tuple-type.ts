@@ -13,8 +13,8 @@ export type _SearchTuple = {
 };
 
 export type _Tuple = {
-  id: string;
-  time: number;
+  //_id: string | number;
+  //time: number;
   from?: string;
   [key: string]: number | string | boolean;
 };

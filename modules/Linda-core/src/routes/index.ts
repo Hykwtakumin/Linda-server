@@ -1,36 +1,69 @@
 import * as express from "express";
-import tupleSpaces from "../memoryDB";
+import app from "../app";
 import tupleSpace from "../tupleSpace";
-//import { _TupleSpace } from "../interfaces/tuple-type";
+import storageClient from "../memoryClient";
+import { ObjectID } from "bson";
+import memoryDB from "../memoryDB";
 const router: express.Router = express.Router();
 
+// router.get(
+//   "/:tupleSpaceName",
+//   async (req: express.Request, res: express.Response) => {
+//     const client = new storageClient(req.params.tupleSpaceName);
+//     let ts = new tupleSpace(client);
+//     console.log(memoryDB);
+//     let resData = await ts.write({ type: "aaaa", where: "masuilab" });
+//     res.send(resData);
+//   }
+// );
+
+// router.post(
+//   "/:tupleSpaceName",
+//   (req: express.Request, res: express.Response) => {
+//     const client = new storageClient(req.params.tupleSpaceName);
+//     let ts: any = new tupleSpace(client);
+//     let resData: string | ObjectID = ts.write(req.body);
+//     res.send({ status: "ok", tuple: resData });
+//   }
+// );
 router.get(
-  "/:tupleSpaceName",
-  (req: express.Request, res: express.Response) => {
-    let ts: any;
-    if (tupleSpaces[req.params.tupleSpaceName]) {
-      ts = tupleSpaces[req.params.tupleSpaceName];
+  "/:tupleSpaceName/:operation",
+  async (req: express.Request, res: express.Response) => {
+    const client = new storageClient(req.params.tupleSpaceName);
+    let ts = new tupleSpace(client);
+    console.log(memoryDB);
+    let resData;
+    if (req.params.operation == "read") {
+      resData = await ts.read(req.query);
+    } else if (req.params.operation == "take") {
+      resData = await ts.take(req.query);
+    } else if (req.params.operation == "write") {
+      resData = await ts.write(req.query);
     } else {
-      ts = new tupleSpace(req.params.tupleSpaceName);
-      tupleSpaces[req.params.tupleSpaceName] = ts;
+      resData = 'There is no operation like "' + req.params.operation + '"';
     }
-    res.send(ts);
+    res.send(resData);
+  }
+);
+
+router.get(
+  "/:tupleSpaceName/",
+  async (req: express.Request, res: express.Response) => {
+    const client = new storageClient(req.params.tupleSpaceName);
+    let ts = new tupleSpace(client);
+    console.log(memoryDB);
+    let resData;
+    res.send("tupleSpaceName = " + req.params.tupleSpaceName);
   }
 );
 
 router.post(
   "/:tupleSpaceName",
   (req: express.Request, res: express.Response) => {
-    let ts: any;
-    if (tupleSpaces[req.params.tupleSpaceName]) {
-      ts = tupleSpaces[req.params.tupleSpaceName];
-    } else {
-      ts = new tupleSpace(req.params.tupleSpaceName);
-      tupleSpaces[req.params.tupleSpaceName] = ts;
-    }
-
-    ts.write(req.body);
-    res.send({ status: "ok", tuple: req.body });
+    const client = new storageClient(req.params.tupleSpaceName);
+    let ts: any = new tupleSpace(client);
+    let resData = ts.write(req.body);
+    res.send({ status: "ok", tuple: resData });
   }
 );
 
