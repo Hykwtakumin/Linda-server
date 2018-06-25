@@ -18,7 +18,9 @@ export default class storageClient {
 
   get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
     // TODO:nullじゃない気がする
-    let document: _ResponseTuple | null = this.collection.findOne(searchTuple);
+    let document: _ResponseTuple | null = this.collection.findOne(searchTuple, {
+      sort: { time: -1 },
+    });
     if (document) {
       document._isMuched = true;
       return document;
@@ -28,6 +30,7 @@ export default class storageClient {
   }
 
   insert(writeTuple: _Tuple): _Tuple {
+    writeTuple.time = Date.now();
     let result = this.collection.insert(writeTuple);
     return result;
   }
