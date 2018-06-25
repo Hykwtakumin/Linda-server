@@ -33,13 +33,7 @@ export default class tupleSpace {
       }
     });
   }
-  // take(takeTuple: _SearchTuple): _ResponseTuple | _NFTuple {
-  //   let result = this.storage.get(takeTuple);
-  //   if (result._isMuched) {
-  //     this.storage.delete(result.id);
-  //   }
-  //   return result;
-  // }
+
   async take(takeTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
     let resData: _ResponseTuple | _NFTuple = await this.storage.get(takeTuple);
     if (resData._isMuched) {

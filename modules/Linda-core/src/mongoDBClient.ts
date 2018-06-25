@@ -5,14 +5,15 @@ import {
   _ResponseTuple,
 } from "./interfaces/tuple-type";
 
-import db from "./mongoDB";
-import { ObjectID, ObjectId } from "bson";
+//import db from "./mongoDB";
+import collection from "./mongoDB";
+import { ObjectID } from "bson";
 
 export default class storageClient {
   collection: any;
 
   constructor(tupleSpaceName: string) {
-    this.collection = db.collection(tupleSpaceName);
+    this.collection = collection(tupleSpaceName);
   }
 
   get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
@@ -26,11 +27,11 @@ export default class storageClient {
     }
   }
 
-  insert(writeTuple: _Tuple): ObjectID {
+  insert(writeTuple: _Tuple): _Tuple {
     let result = this.collection.insert(writeTuple);
-    return result.insertedId;
+    return result;
   }
-  delete(id: ObjectID) {
+  delete(id: ObjectID): void {
     this.collection.drop({ _id: id });
   }
 }
