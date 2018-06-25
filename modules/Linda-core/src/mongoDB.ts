@@ -1,14 +1,14 @@
 import { MongoClient, Db } from "mongodb";
-import * as path from "path";
 
-const host = process.env.MONGO_HOST || "127.0.0.1";
-const dbname = process.env.MONGO_DBNAME || "linda";
-//const url = path.join("mongodb://", host, dbname);
-const url = "mongodb://localhost:27017";
+const host = process.env.MONGO_HOST || "localhost";
+const port = process.env.MONGO_PORT || ":27017";
+const url = "mongodb://" + host + port;
 console.log(url);
 
+//TODO:anyはまずい
 let db: any;
 
+//v3.0から仕様が変わった？要調査
 MongoClient.connect(
   url,
   (err, client) => {

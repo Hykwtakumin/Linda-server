@@ -37,9 +37,7 @@ export default class tupleSpace {
   async take(takeTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
     let resData: _ResponseTuple | _NFTuple = await this.storage.get(takeTuple);
     if (resData._isMuched) {
-      //console.log(resData._id);
       await this.storage.delete(resData._id);
-      //this.storage.delete(0);
     }
     return resData;
   }
