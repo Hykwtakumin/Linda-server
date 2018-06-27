@@ -3,14 +3,24 @@ import * as dotenv from "dotenv";
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
+import * as socketIo from "socket.io";
+import { createServer, Server } from "http";
 
 dotenv.load();
 
 import routeIndex from "./routes/index";
+import { Socket } from "dgram";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 
 const app: express.Express = express();
+const server: Server = createServer(app);
+const io = socketIo.listen(server);
+//console.log(io);
+
+server.listen(PORT, () => {
+  console.log("server listeninig at port:" + PORT);
+});
 
 app.use(logger("dev"));
 app.use(bodyParser.json());
@@ -47,13 +57,14 @@ app.use(function(
 });
 
 app.use("/", routeIndex);
-//app.use("/watch", routeIndex);
-// app.use("/read", routeRead);
-// app.use("/write", routeWrite);
-// app.use("/take", routeTake);
 
-app.listen(PORT, () => {
-  console.log("server listeninig at port:" + PORT);
+//TODO:anyまずい
+let ioSocket: socketIo.Socket;
+io.sockets.on("connection", socket => {
+  console.log("User connected");
+  ioSocket = socket;
 });
 
+//app.io = io;
 export default app;
+export { ioSocket };

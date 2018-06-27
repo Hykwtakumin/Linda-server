@@ -3,6 +3,7 @@ import {
   _NFTuple,
   _SearchTuple,
   _ResponseTuple,
+  _IsMuchResponse,
 } from "./interfaces/tuple-type";
 
 //import db from "./mongoDB";
@@ -36,5 +37,15 @@ export default class storageClient {
   }
   delete(id: ObjectID): void {
     this.collection.drop({ _id: id });
+  }
+  isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {
+    for (let operationKey in searchTuple) {
+      if (!targetTuple[operationKey]) {
+        return { isMuched: false, res: null };
+      } else if (targetTuple[operationKey] != searchTuple[operationKey]) {
+        return { isMuched: false, res: null };
+      }
+    }
+    return { isMuched: true, res: targetTuple };
   }
 }
