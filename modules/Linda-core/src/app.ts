@@ -9,7 +9,6 @@ import { createServer, Server } from "http";
 dotenv.load();
 
 import routeIndex from "./routes/index";
-import { Socket } from "dgram";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 
