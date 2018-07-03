@@ -1,4 +1,5 @@
 import tupleSpace from "./tupleSpace";
+import app from "./app";
 //TODO:any型
 let tupleSpaces: any = {};
 const tupleSpaceCreater = (tupleSpaceName: string) => {

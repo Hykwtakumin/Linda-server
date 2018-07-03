@@ -5,6 +5,7 @@ import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
 import * as socketIo from "socket.io";
 import { createServer, Server } from "http";
+import Linda from "./linda";
 
 dotenv.load();
 
@@ -15,6 +16,8 @@ const PORT: number = Number(process.env.PORT) || 3000;
 const app: express.Express = express();
 const server: Server = createServer(app);
 const io = socketIo.listen(server);
+const linda = new Linda();
+linda.listen(server, io);
 //console.log(io);
 
 server.listen(PORT, () => {
@@ -58,12 +61,15 @@ app.use(function(
 app.use("/", routeIndex);
 
 //TODO:anyまずい
-let ioSocket: socketIo.Socket;
-io.sockets.on("connection", socket => {
-  console.log("User connected");
-  ioSocket = socket;
-});
+// let ioSocket: socketIo.Socket;
+// io.sockets.on("connection", socket => {
+//   console.log("User connected");
+//   ioSocket = socket;
+// });
+app.set("linda", linda);
+
+//app.set("io", io);
 
 //app.io = io;
 export default app;
-export { ioSocket };
+//export { ioSocket };

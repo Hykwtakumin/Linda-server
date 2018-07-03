@@ -9,6 +9,7 @@ import {
 //import db from "./mongoDB";
 import collection from "./mongoDB";
 import { ObjectID } from "bson";
+import { serveStatic } from "serve-static";
 
 export default class storageClient {
   collection: any;
@@ -17,11 +18,14 @@ export default class storageClient {
     this.collection = collection(tupleSpaceName);
   }
 
-  get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+  async get(searchTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
     // TODO:nullじゃない気がする
-    let document: _ResponseTuple | null = this.collection.findOne(searchTuple, {
-      sort: { time: -1 },
-    });
+    let document: _ResponseTuple | null = await this.collection.findOne(
+      searchTuple,
+      {
+        sort: { time: -1 },
+      }
+    );
     if (document) {
       document._isMuched = true;
       return document;
@@ -35,8 +39,8 @@ export default class storageClient {
     let result = this.collection.insert(writeTuple);
     return result;
   }
-  delete(id: ObjectID): void {
-    this.collection.drop({ _id: id });
+  async delete(id: ObjectID): Promise<any> {
+    await this.collection.deleteOne({ _id: id });
   }
   isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {
     for (let operationKey in searchTuple) {

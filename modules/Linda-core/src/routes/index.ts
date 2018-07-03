@@ -3,27 +3,31 @@ import * as express from "express";
 //import storageClient from "../mongoDBClient";
 const router: express.Router = express.Router();
 //import { sc } from "../app";
-import { ioSocket } from "../app";
+//import { ioSocket } from "../app";
 import { _Tuple } from "../interfaces/tuple-type";
 import tupleSpaceCreater from "../tupleSpaceCreater";
-
+import app from "../app";
 router.get(
   "/:tupleSpaceName/:operation",
-  async (req: express.Request, res: express.Response) => {
-    //const client = await new storageClient(req.params.tupleSpaceName);
-    //let ts = await new tupleSpace(client);
-    let ts = tupleSpaceCreater(req.params.tupleSpaceName);
-    let resData;
+  (req: express.Request, res: express.Response) => {
+    const linda = app.get("linda");
+    let ts = linda.tupleSpace(req.params.tupleSpaceName);
+    let resData = 'There is no operation like "' + req.params.operation + '"';
     if (req.params.operation == "read") {
-      resData = await ts.read(req.query);
+      ts.read(req.query, (Data: any) => {
+        res.send(Data);
+      });
     } else if (req.params.operation == "take") {
-      resData = await ts.take(req.query);
+      ts.take(req.query, (Data: any) => {
+        res.send(Data);
+      });
     } else if (req.params.operation == "write") {
-      resData = await ts.write(req.query);
+      ts.write(req.query, (Data: any) => {
+        res.send(Data);
+      });
     } else {
-      resData = 'There is no operation like "' + req.params.operation + '"';
+      res.send(resData);
     }
-    res.send(resData);
   }
 );
 
@@ -36,7 +40,7 @@ router.get(
     //console.log(io);
     //sc.emit("test", { test: "test" });
     ts.watch(req.query, (tuple: _Tuple) => {
-      ioSocket.emit("test", tuple);
+      //ioSocket.emit("test", tuple);
     });
     res.send("tupleSpaceName = " + req.params.tupleSpaceName);
   }
