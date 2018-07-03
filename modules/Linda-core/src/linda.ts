@@ -19,9 +19,9 @@ export default class Linda {
   listen(server: any, io: any) {
     console.log("linda-listening");
     this.server = server;
-    this.server.on("request", (req: any, res: any) => {
-      this.tsNameFromURL = url.parse(decodeURI(req.url)).pathname.split("/")[0];
-    });
+    // this.server.on("request", (req: any, res: any) => {
+    //   this.tsNameFromURL = url.parse(decodeURI(req.url)).pathname.split("/")[0];
+    // });
     this.io = io;
     io.sockets.on("connection", (socket: any) => {
       let socketId = socket.id;

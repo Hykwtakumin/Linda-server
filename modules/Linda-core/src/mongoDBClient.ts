@@ -6,10 +6,8 @@ import {
   _IsMuchResponse,
 } from "./interfaces/tuple-type";
 
-//import db from "./mongoDB";
 import collection from "./mongoDB";
 import { ObjectID } from "bson";
-import { serveStatic } from "serve-static";
 
 export default class storageClient {
   collection: any;
