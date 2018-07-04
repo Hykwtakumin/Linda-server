@@ -4,7 +4,7 @@ import * as express from "express";
 const router: express.Router = express.Router();
 //import { sc } from "../app";
 //import { ioSocket } from "../app";
-import { _Tuple } from "../interfaces/tuple-type";
+import { _Tuple } from "../interfaces/types";
 import tupleSpaceCreater from "../tupleSpaceCreater";
 import app from "../app";
 router.get(

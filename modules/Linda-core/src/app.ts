@@ -14,7 +14,7 @@ const PORT: number = Number(process.env.PORT) || 3000;
 
 const app: express.Express = express();
 const server: Server = createServer(app);
-const io = socketIo.listen(server);
+const io: SocketIO.Server = socketIo.listen(server);
 const linda = new Linda();
 
 linda.listen(server, io);

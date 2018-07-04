@@ -3,7 +3,7 @@ import {
   _Tuple,
   _SearchTuple,
   _ResponseTuple,
-} from "./interfaces/tuple-type";
+} from "./interfaces/types";
 import { EventEmitter2 } from "eventemitter2";
 //ここで選択できる
 import storageClient from "./mongoDBClient";
@@ -11,7 +11,7 @@ import storageClient from "./mongoDBClient";
 //TODO:eventemitter継承する意味ある？
 export default class tupleSpace extends EventEmitter2 {
   //FIXME:any型にしないで関数/クラスインスタンスの型をあとでちゃんと書く
-  storage: any;
+  storage: storageClient;
   tupleSpaceName: string;
   constructor(tupleSpaceName: string) {
     super({
@@ -25,11 +25,12 @@ export default class tupleSpace extends EventEmitter2 {
     this.storage = new storageClient(tupleSpaceName);
   }
   //TODO:numberで返していいものか検討
-  write(writeTuple: _Tuple, callback: any): void {
+  async write(writeTuple: _Tuple, callback: any): Promise<any> {
     this.storage.insert(writeTuple);
     this.emit("_writeData", writeTuple);
     //TODO:そのまま返してるだけになってる
     callback(writeTuple);
+    return writeTuple;
   }
   async read(searchTuple: _SearchTuple, callback: any): Promise<any> {
     let resData: _ResponseTuple | _NFTuple = await this.storage.get(
@@ -60,5 +61,3 @@ export default class tupleSpace extends EventEmitter2 {
     callback(resData);
   }
 }
-
-//export { Emitter };

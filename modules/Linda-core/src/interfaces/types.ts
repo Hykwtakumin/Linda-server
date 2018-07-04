@@ -36,3 +36,8 @@ export type _IsMuchResponse = {
   isMuched: boolean;
   res: _Tuple | null;
 };
+
+export type _LindaOperation = {
+  _tsName: string;
+  _payload: object;
+};

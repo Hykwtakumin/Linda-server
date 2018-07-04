@@ -4,10 +4,9 @@ import {
   _NFTuple,
   _SearchTuple,
   _ResponseTuple,
-} from "./interfaces/tuple-type";
+} from "./interfaces/types";
 
 import memoryDB from "./memoryDB";
-import Emitter from "./eventEmitter";
 
 export default class storageClient {
   tupleSpace: any;

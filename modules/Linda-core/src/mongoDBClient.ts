@@ -4,7 +4,7 @@ import {
   _SearchTuple,
   _ResponseTuple,
   _IsMuchResponse,
-} from "./interfaces/tuple-type";
+} from "./interfaces/types";
 
 import collection from "./mongoDB";
 import { ObjectID } from "bson";
