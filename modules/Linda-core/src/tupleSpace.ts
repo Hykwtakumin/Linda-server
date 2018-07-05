@@ -1,20 +1,22 @@
 import {
-  _NFTuple,
-  _Tuple,
-  _SearchTuple,
-  _ResponseTuple,
-} from "./interfaces/types";
+  Tuple,
+  ResponseTuple,
+  IsMuchResponse,
+  WatchCallback,
+  WriteCallback,
+  ReadTakeCallback,
+  InsertOneWriteOpResult,
+} from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 //ここで選択できる
 import storageClient from "./mongoDBClient";
 
-//TODO:eventemitter継承する意味ある？
-export default class tupleSpace extends EventEmitter2 {
-  //FIXME:any型にしないで関数/クラスインスタンスの型をあとでちゃんと書く
+export default class tupleSpace {
+  emitter: EventEmitter2;
   storage: storageClient;
   tupleSpaceName: string;
   constructor(tupleSpaceName: string) {
-    super({
+    this.emitter = new EventEmitter2({
       wildcard: true,
       delimiter: "::",
       newListener: false,
@@ -24,40 +26,35 @@ export default class tupleSpace extends EventEmitter2 {
     this.tupleSpaceName = tupleSpaceName;
     this.storage = new storageClient(tupleSpaceName);
   }
-  //TODO:numberで返していいものか検討
-  async write(writeTuple: _Tuple, callback: any): Promise<any> {
-    this.storage.insert(writeTuple);
-    this.emit("_writeData", writeTuple);
-    //TODO:そのまま返してるだけになってる
-    callback(writeTuple);
-    return writeTuple;
-  }
-  async read(searchTuple: _SearchTuple, callback: any): Promise<any> {
-    let resData: _ResponseTuple | _NFTuple = await this.storage.get(
-      searchTuple
+
+  async write(writeTuple: Tuple, callback: WriteCallback): Promise<void> {
+    const resData: InsertOneWriteOpResult = await this.storage.insert(
+      writeTuple
     );
+    this.emitter.emit("_writeData", writeTuple);
+
     callback(resData);
-    this.emit("_readData", resData);
+  }
+  async read(searchTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
+    let resData: ResponseTuple = await this.storage.get(searchTuple);
+    console.log(resData);
+    callback(resData);
   }
 
-  //FIXME:any型にしないで関数の型をあとでちゃんと書く
-  watch(watchTuple: _SearchTuple, callback: any): void {
-    this.on("_writeData", (resTuple: _Tuple) => {
-      let result = this.storage.isMuch(resTuple, watchTuple);
+  watch(watchTuple: Tuple, callback: WatchCallback): void {
+    this.emitter.on("_writeData", (resTuple: Tuple) => {
+      let result: IsMuchResponse = this.storage.isMuch(resTuple, watchTuple);
       if (result.isMuched) {
-        this.emit("_watchData", result.res);
         callback(result.res);
       }
     });
   }
 
-  async take(takeTuple: _SearchTuple, callback: any): Promise<any> {
-    let resData: _ResponseTuple | _NFTuple = await this.storage.get(takeTuple);
-    console.log(resData._id);
+  async take(takeTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
+    let resData: ResponseTuple = await this.storage.get(takeTuple);
     if (resData._isMuched) {
       await this.storage.delete(resData._id);
     }
-    this.emit("_takeData", resData);
     callback(resData);
   }
 }

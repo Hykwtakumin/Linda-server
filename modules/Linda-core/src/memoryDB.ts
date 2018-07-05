@@ -1,6 +1,6 @@
-import { _Memory } from "./interfaces/types";
+import { Memory } from "./interfaces/index";
 
-let memoryDB: _Memory = {
+let memoryDB: Memory = {
   test: [{ _id: 0, time: Date.now(), type: "init" }],
 };
 

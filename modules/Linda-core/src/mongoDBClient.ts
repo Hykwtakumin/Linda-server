@@ -1,46 +1,62 @@
 import {
-  _Tuple,
-  _NFTuple,
-  _SearchTuple,
-  _ResponseTuple,
-  _IsMuchResponse,
-} from "./interfaces/types";
+  Tuple,
+  InsertData,
+  InsertOneWriteOpResult,
+  DeleteWriteOpResultObject,
+  ResponseTuple,
+  SavedData,
+  IsMuchResponse,
+} from "./interfaces/index";
 
 import collection from "./mongoDB";
 import { ObjectID } from "bson";
+import { Collection } from "mongodb";
 
 export default class storageClient {
-  collection: any;
+  collection: Collection;
+  tupleSpaceName: string;
 
   constructor(tupleSpaceName: string) {
     this.collection = collection(tupleSpaceName);
+    this.tupleSpaceName = tupleSpaceName;
   }
 
-  async get(searchTuple: _SearchTuple): Promise<_ResponseTuple | _NFTuple> {
-    // TODO:nullじゃない気がする
-    let document: _ResponseTuple | null = await this.collection.findOne(
-      searchTuple,
+  async get(searchTuple: Tuple): Promise<ResponseTuple> {
+    console.log(searchTuple);
+    const document: SavedData | null = await this.collection.findOne(
+      { _payload: searchTuple },
       {
         sort: { time: -1 },
       }
     );
-    if (document) {
-      document._isMuched = true;
-      return document;
+    if (document == null) {
+      return {
+        _isMuched: false,
+        _id: null,
+        _from: this.tupleSpaceName,
+        _payload: null,
+        _time: null,
+      };
     } else {
-      return { _isMuched: false, mes: "no match data" };
+      return Object.assign(document, {
+        _isMuched: true,
+      });
     }
   }
 
-  insert(writeTuple: _Tuple): _Tuple {
-    writeTuple.time = Date.now();
-    let result = this.collection.insert(writeTuple);
-    return result;
+  insert(writeTuple: Tuple): Promise<InsertOneWriteOpResult> {
+    const time = Date.now();
+    const insertData: InsertData = {
+      _time: time,
+      _from: this.tupleSpaceName,
+      _payload: writeTuple,
+    };
+    return this.collection.insertOne(insertData);
   }
-  async delete(id: ObjectID): Promise<any> {
-    await this.collection.deleteOne({ _id: id });
+  delete(id: ObjectID): Promise<DeleteWriteOpResultObject> {
+    return this.collection.deleteOne({ _id: id });
   }
-  isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {
+  isMuch(targetTuple: Tuple, searchTuple: Tuple): IsMuchResponse {
     for (let operationKey in searchTuple) {
       if (!targetTuple[operationKey]) {
         return { isMuched: false, res: null };

@@ -1,8 +1,11 @@
 import tupleSpace from "./tupleSpace";
-// import * as url from "url";
 import { Server } from "http";
-import { _LindaOperation, _ResponseTuple } from "./interfaces/types";
-//TODO:any型
+import {
+  LindaOperation,
+  ResponseTuple,
+  Tuple,
+  InsertOneWriteOpResult,
+} from "./interfaces/index";
 
 export default class Linda {
   tupleSpaces: { [key: string]: tupleSpace };
@@ -20,47 +23,38 @@ export default class Linda {
   }
   listen(server: Server, io: SocketIO.Server) {
     console.log("linda-listening");
-    //this.server = server;
-    // this.server.on("request", (req: any, res: any) => {
-    //   this.tsNameFromURL = url.parse(decodeURI(req.url)).pathname.split("/")[0];
-    // });
+    this.server = server;
     this.io = io;
     io.sockets.on("connection", (socket: SocketIO.Socket) => {
       let socketId: string = socket.id;
-      socket.on("_read_operation", (data: _LindaOperation) => {
-        this.tupleSpace(data._tsName).read(
-          data._payload,
-          (resData: _ResponseTuple) => {
+      socket.on("_read_operation", (data: LindaOperation) => {
+        this.tupleSpace(data.tsName).read(
+          data.payload,
+          (resData: ResponseTuple) => {
             socket.to(socketId).emit("_read_response", resData);
           }
         );
       });
-      socket.on("_write_operation", (data: _LindaOperation) => {
-        this.tupleSpace(data._tsName).write(
-          data._payload,
-          (resData: _ResponseTuple) => {
-            console.log(resData);
+      socket.on("_write_operation", (data: LindaOperation) => {
+        this.tupleSpace(data.tsName).write(
+          data.payload,
+          (resData: InsertOneWriteOpResult) => {
             socket.to(socketId).emit("_write_response", resData);
           }
         );
       });
-      socket.on("_take_operation", (data: _LindaOperation) => {
-        this.tupleSpace(data._tsName).take(
-          data._payload,
-          (resData: _ResponseTuple) => {
+      socket.on("_take_operation", (data: LindaOperation) => {
+        this.tupleSpace(data.tsName).take(
+          data.payload,
+          (resData: ResponseTuple) => {
             socket.to(socketId).emit("_take_response", resData);
           }
         );
       });
-      socket.on("_watch_operation", (data: _LindaOperation) => {
-        console.log("tuple-watched:" + JSON.stringify(data));
-        this.tupleSpace(data._tsName).watch(
-          data._payload,
-          (resData: _ResponseTuple) => {
-            console.log("watch-data=" + JSON.stringify(resData));
-            socket.emit("_watch_response", resData);
-          }
-        );
+      socket.on("_watch_operation", (data: LindaOperation) => {
+        this.tupleSpace(data.tsName).watch(data.payload, (resData: Tuple) => {
+          socket.emit("_watch_response", resData);
+        });
       });
     });
   }

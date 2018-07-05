@@ -1,16 +1,17 @@
 import {
-  _IsMuchResponse,
-  _Tuple,
-  _NFTuple,
-  _SearchTuple,
-  _ResponseTuple,
-} from "./interfaces/types";
+  IsMuchResponse,
+  Tuple,
+  ResponseTuple,
+  InsertData,
+} from "./interfaces/index";
 
 import memoryDB from "./memoryDB";
 
 export default class storageClient {
   tupleSpace: any;
+  tupleSpaceName: string;
   constructor(tupleSpaceName: string) {
+    this.tupleSpaceName = tupleSpaceName;
     if (memoryDB[tupleSpaceName]) {
       this.tupleSpace = memoryDB[tupleSpaceName];
       console.log(tupleSpaceName + " is already exist");
@@ -22,35 +23,45 @@ export default class storageClient {
     }
   }
   // .map使って書き直せる説
-  get(searchTuple: _SearchTuple): _ResponseTuple | _NFTuple {
+  get(tuple: Tuple): ResponseTuple {
     let i: number;
     for (i = this.tupleSpace.length; i > 0; i--) {
-      let result = this.isMuch(this.tupleSpace[i - 1], searchTuple);
+      let result = this.isMuch(this.tupleSpace[i - 1], tuple);
       if (result.isMuched) {
-        let resData: _ResponseTuple = this.tupleSpace[i - 1];
-        resData._isMuched = true;
+        let resData: ResponseTuple = Object.assign(this.tupleSpace[i - 1], {
+          _isMuched: true,
+        });
         return resData;
       }
     }
     if (i == 0) {
-      return { _isMuched: false, mes: "no match data" };
+      return {
+        _isMuched: false,
+        _id: null,
+        _from: this.tupleSpaceName,
+        _payload: null,
+        _time: null,
+      };
     }
   }
 
-  insert(writeTuple: _Tuple): _Tuple {
-    writeTuple._id = this.tupleSpace.length;
-    writeTuple.time = Date.now();
-    this.tupleSpace.push(writeTuple);
-    return writeTuple;
+  insert(writeTuple: Tuple): InsertData {
+    const time = Date.now();
+    const insertData: InsertData = {
+      _time: time,
+      _from: this.tupleSpaceName,
+      _payload: writeTuple,
+      _id: this.tupleSpace.length,
+    };
+    this.tupleSpace.push(insertData);
+    return insertData;
   }
   //update() {}
   delete(id: number): void {
-    console.log(id);
-    //console.log("this tupleSpace:" + JSON.stringify(this.tupleSpace));
     this.tupleSpace.splice(id, 1);
   }
 
-  isMuch(targetTuple: _Tuple, searchTuple: _SearchTuple): _IsMuchResponse {
+  isMuch(targetTuple: Tuple, searchTuple: Tuple): IsMuchResponse {
     for (let operationKey in searchTuple) {
       if (!targetTuple[operationKey]) {
         return { isMuched: false, res: null };
