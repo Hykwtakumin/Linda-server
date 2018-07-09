@@ -10,7 +10,7 @@ import {
 export default class Linda {
   tupleSpaces: { [key: string]: tupleSpace };
   server: Server;
-  tsNameFromURL: string;
+  tupleSpaceName: string;
   io: SocketIO.Server;
   constructor() {
     this.tupleSpaces = {};
@@ -26,12 +26,11 @@ export default class Linda {
     this.server = server;
     this.io = io;
     io.sockets.on("connection", (socket: SocketIO.Socket) => {
-      let socketId: string = socket.id;
       socket.on("_read_operation", (data: LindaOperation) => {
         this.tupleSpace(data.tsName).read(
           data.payload,
           (resData: ResponseTuple) => {
-            socket.to(socketId).emit("_read_response", resData);
+            socket.emit("_read_response", resData);
           }
         );
       });
@@ -39,7 +38,7 @@ export default class Linda {
         this.tupleSpace(data.tsName).write(
           data.payload,
           (resData: InsertOneWriteOpResult) => {
-            socket.to(socketId).emit("_write_response", resData);
+            socket.emit("_write_response", resData);
           }
         );
       });
@@ -47,7 +46,7 @@ export default class Linda {
         this.tupleSpace(data.tsName).take(
           data.payload,
           (resData: ResponseTuple) => {
-            socket.to(socketId).emit("_take_response", resData);
+            socket.emit("_take_response", resData);
           }
         );
       });

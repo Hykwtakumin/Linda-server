@@ -37,7 +37,6 @@ export default class tupleSpace {
   }
   async read(searchTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
     let resData: ResponseTuple = await this.storage.get(searchTuple);
-    console.log(resData);
     callback(resData);
   }
 

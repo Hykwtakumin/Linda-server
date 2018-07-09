@@ -5,7 +5,12 @@
   "author": "Ryusei Sajiki",
   "license": "MIT",
   "scripts": {
-    "build": "webpack"
+    "watch": "tsc -w",
+    "start": "npm run build && npm run server",
+    "start:dev": "tsc -w & npm run server:dev",
+    "server": "node dist/app.js",
+    "server:dev": "nodemon dist/app.js -watch src",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/bson": "^1.0.10",
