@@ -8,6 +8,7 @@
     "build": "webpack"
   },
   "devDependencies": {
+    "@types/bson": "^1.0.10",
     "@types/socket.io": "^1.4.36",
     "@types/socket.io-client": "^1.4.32",
     "ts-loader": "^4.4.2",
