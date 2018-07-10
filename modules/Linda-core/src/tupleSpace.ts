@@ -6,6 +6,7 @@ import {
   WriteCallback,
   ReadTakeCallback,
   InsertOneWriteOpResult,
+  WatchResponseTuple,
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 //ここで選択できる
@@ -44,7 +45,12 @@ export default class tupleSpace {
     this.emitter.on("_writeData", (resTuple: Tuple) => {
       let result: IsMuchResponse = this.storage.isMuch(resTuple, watchTuple);
       if (result.isMuched) {
-        callback(result.res);
+        const resData: WatchResponseTuple = {
+          _time: Date.now(),
+          _from: this.tupleSpaceName,
+          _payload: result.res,
+        };
+        callback(resData);
       }
     });
   }

@@ -35,6 +35,12 @@ export type ResponseTuple = {
   _payload: Object;
 };
 
+export type WatchResponseTuple = {
+  _time: number;
+  _from: string;
+  _payload: Object;
+};
+
 export type IsMuchResponse = {
   isMuched: boolean;
   res: Tuple | null;
@@ -63,7 +69,7 @@ export interface DeleteWriteOpResultObject {
 }
 
 export interface WatchCallback {
-  (resData: Tuple): void;
+  (resData: WatchResponseTuple): void;
 }
 
 export interface WriteCallback {

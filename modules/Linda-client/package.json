@@ -6,11 +6,8 @@
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
-    "start": "npm run build && npm run server",
-    "start:dev": "tsc -w & npm run server:dev",
-    "server": "node dist/app.js",
-    "server:dev": "nodemon dist/app.js -watch src",
-    "build": "tsc"
+    "build": "tsc",
+    "webpack": "webpack"
   },
   "devDependencies": {
     "@types/bson": "^1.0.10",

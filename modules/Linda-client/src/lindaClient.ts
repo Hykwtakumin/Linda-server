@@ -12,8 +12,8 @@ export default class LindaClient {
   constructor() {}
 
   connect(url: string, callback: ConnectCallback) {
-    //if (this.validateURL(url)) {
-    if (true) {
+    if (this.validateURL(url)) {
+      //if (true) {
       const urlArray = url.split("/");
       this.socket = io(urlArray[0] + "//" + urlArray[2]);
       this.tupleSpaceName = urlArray[3];
@@ -56,7 +56,8 @@ export default class LindaClient {
   }
   private validateURL(url: string): boolean {
     const regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
+    const regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
 
-    return regex.test(url);
+    return regex.test(url) || regex2.test(url);
   }
 }

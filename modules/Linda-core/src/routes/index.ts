@@ -1,11 +1,8 @@
 import * as express from "express";
-//import tupleSpace from "../tupleSpace";
-//import storageClient from "../mongoDBClient";
 const router: express.Router = express.Router();
 import { ResponseTuple, InsertOneWriteOpResult } from "../interfaces";
-//import { sc } from "../app";
-//import { ioSocket } from "../app";
 import app from "../app";
+
 router.get(
   "/:tupleSpaceName/:operation",
   (req: express.Request, res: express.Response) => {
@@ -40,8 +37,6 @@ router.get(
 router.post(
   "/:tupleSpaceName",
   (req: express.Request, res: express.Response) => {
-    // const client = new storageClient(req.params.tupleSpaceName);
-    // let ts: any = new tupleSpace(client);
     const linda = app.get("linda");
     let ts = linda.tupleSpace(req.params.tupleSpaceName);
     let resData = ts.write(req.body);
