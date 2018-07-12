@@ -27,10 +27,18 @@ router.get(
   }
 );
 
+router.get("/", (req: express.Request, res: express.Response) => {
+  res.render("index");
+});
+
 router.get(
-  "/:tupleSpaceName/",
+  "/:tupleSpaceName",
   (req: express.Request, res: express.Response) => {
-    res.send("tupleSpaceName = " + req.params.tupleSpaceName);
+    //res.send("tupleSpaceName = " + req.params.tupleSpaceName);
+    res.render("tupleSpace", {
+      tupleSpaceName: req.params.tupleSpaceName,
+      watchTuple: req.query,
+    });
   }
 );
 

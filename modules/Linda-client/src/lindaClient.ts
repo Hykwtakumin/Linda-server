@@ -54,10 +54,12 @@ export default class LindaClient {
     });
     this.socket.emit("_watch_operation", watchData);
   }
+  onDisconnected(callback: ConnectCallback) {
+    this.socket.on("disconnect", callback);
+  }
   private validateURL(url: string): boolean {
     const regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
     const regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
-
     return regex.test(url) || regex2.test(url);
   }
 }

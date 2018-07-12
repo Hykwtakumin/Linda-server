@@ -17,6 +17,10 @@ const server: Server = createServer(app);
 const io: SocketIO.Server = socketIo.listen(server);
 const linda = new Linda();
 
+app.set("views", "views/");
+app.set("view engine", "pug");
+app.use(express.static("public/"));
+
 linda.listen(server, io);
 server.listen(PORT, () => {
   console.log("server listeninig at port:" + PORT);
