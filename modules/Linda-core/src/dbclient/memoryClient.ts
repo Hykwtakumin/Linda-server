@@ -3,9 +3,9 @@ import {
   Tuple,
   ResponseTuple,
   InsertData,
-} from "./interfaces/index";
+} from "../interfaces/index";
 
-import memoryDB from "./memoryDB";
+import memoryDB from "../db/memoryDB";
 
 export default class storageClient {
   tupleSpace: any;

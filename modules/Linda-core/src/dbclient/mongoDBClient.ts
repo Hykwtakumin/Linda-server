@@ -6,9 +6,9 @@ import {
   ResponseTuple,
   SavedData,
   IsMuchResponse,
-} from "./interfaces/index";
+} from "../interfaces/index";
 
-import collection from "./mongoDB";
+import collection from "../db/mongoDB";
 import { ObjectID } from "bson";
 import { Collection } from "mongodb";
 
