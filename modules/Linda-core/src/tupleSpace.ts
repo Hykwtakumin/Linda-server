@@ -10,7 +10,7 @@ import {
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 //ここで選択できる
-import storageClient from "./mongoDBClient";
+import storageClient from "./dbclient/mongoDBClient";
 
 export default class tupleSpace {
   emitter: EventEmitter2;
