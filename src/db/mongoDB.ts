@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection } from "mongodb";
 
-const url: string = process.env.MONGODB_URI || "mongodb://localhost";
+const url: string = process.env.MONGODB_URI || "mongodb://localhost/linda";
 // const host = process.env.MONGO_HOST || "localhost";
 console.log(url);
 let db: Db;
@@ -13,7 +13,7 @@ MongoClient.connect(
       console.log(err);
     }
     console.log("Connected correctly to db");
-    db = client.db("linda");
+    db = client.db();
   }
 );
 
