@@ -13,6 +13,6 @@ html(lang="en")
             button(id="write-button") #{JSON.stringify(watchTuple)}
         p %curl -d 'tuple=#{JSON.stringify(watchTuple)}' #{httpHost}
         h2 watch #{JSON.stringify(watchTuple)}
-        div(id="main" data-watch=JSON.stringify(watchTuple))
+        div(id="main" data-watch=JSON.stringify(watchTuple) data-tsname=tupleSpaceName)
             ul(id='content')
         script(src="js/tupleSpace.js")

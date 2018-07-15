@@ -1,9 +1,11 @@
 $(function() {
-  var watchTuple = $("#main").data("watch");
+  const watchTuple = $("#main").data("watch");
+  const tupleSpaceName = $("#main").data("tsname");
   const ts = new LindaClient();
-
+  const url = "https://" + location.hostname + "/" + tupleSpaceName;
+  console.log(url);
   ts.connect(
-    "http://localhost:3000/masuilab",
+    url,
     () => {
       ts.onDisconnected(() => {
         location.reload();
