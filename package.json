@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
-    "start": "npm run build && npm run server",
+    "start": "npm run server",
     "start:dev": "tsc -w & npm run server:dev",
     "server": "node dist/app.js",
     "server:dev": "nodemon dist/app.js -watch src",
