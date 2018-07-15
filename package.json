@@ -2,7 +2,7 @@
   "name": "Linda",
   "version": "1.0.0",
   "scripts": {
-    "start": "node modules/Linda-core/dist/app.js"
+    "start": "node ./modules/Linda-core/dist/app.js"
   },
   "repository": "https://github.com/saji-ryu/Linda",
   "author": "Ryusei Sajiki <rsajiki@gmail.com>",
