@@ -1,11 +1,3 @@
-///<reference path="../node_modules/@types/node/index.d.ts"/>
-declare module "express" {
-  // declare module "express-serve-static-core"
-  export interface Request {
-    user: any;
-  }
-}
-
 import * as express from "express";
 import * as dotenv from "dotenv";
 import * as bodyParser from "body-parser";
