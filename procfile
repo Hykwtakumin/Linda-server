@@ -1,0 +1,1 @@
+web: node modules/Linda-core/dist/app.js 

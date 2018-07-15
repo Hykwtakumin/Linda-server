@@ -10,7 +10,7 @@
     "server:dev": "nodemon dist/app.js -watch src",
     "build": "tsc"
   },
-  "author": "Ryusei Sajiki",
+  "author": "Ryusei Sajiki <rsajiki@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.1",

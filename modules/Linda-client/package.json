@@ -2,7 +2,7 @@
   "name": "Linda-client",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Ryusei Sajiki",
+  "author": "Ryusei Sajiki <rsajiki@gmail.com>",
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
