@@ -9,7 +9,7 @@ import {
   WatchResponseTuple,
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
-//ここで選択できる
+// default:using MongoDB
 import storageClient from "./dbclient/mongoDBClient";
 
 export default class tupleSpace {
